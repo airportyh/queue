@@ -6,9 +6,9 @@
 module.exports = Queue;
 
 var EventEmitter = require('events').EventEmitter;
-var util = require('util');
 
 function Queue(options) {
+  EventEmitter.call(this);
   options = options || {};
   this.concurrency = options.concurrency || 1;
   this.timeout = options.timeout || 0;
@@ -16,7 +16,10 @@ function Queue(options) {
   this.jobs = [];
 }
 
-util.inherits(Queue, EventEmitter);
+var proto = function() {};
+proto.prototype = EventEmitter.prototype;
+Queue.prototype = new proto;
+Queue.prototype.constructor = Queue;
 
 Queue.prototype.__defineGetter__('length', function() {
   return this.pending + this.jobs.length;
